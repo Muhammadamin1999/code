@@ -1,0 +1,70 @@
+#ifndef LIB_H
+#define LIB_H
+#include <string>
+#include<iostream>
+using namespace std;
+
+class PiO
+{
+
+    private:
+   string name;
+   string* dishes; // vector<string> dishes;
+   double* prices; // vector<double> prices;
+   int length_of_lists;
+   int unique_ID;
+   static int counter_of_PiOs;
+   static int number_of_dishes_in_orders;
+
+
+
+    public:
+     PiO(string N="");
+     ~PiO();
+   void addItemToTheList(string D, double P);
+   PiO(const PiO &x);
+   PiO& operator=(const PiO& x);
+   friend bool operator < (const PiO &p, const PiO &q);
+   double & operator[](int i);
+   friend ostream& operator<<(ostream &out,const PiO &c);
+
+};
+
+#endif // LIB_H
+
+---------------------------------------
+
+
+#ifndef LIB_H
+#define LIB_H
+#include <string>
+#include<iostream>
+using namespace std;
+
+class PiO
+{
+
+    private:
+   string name;
+   string* dishes; // vector<string> dishes;
+   double* prices; // vector<double> prices;
+   int length_of_lists;
+   int unique_ID;
+   static int counter_of_PiOs;
+   static int number_of_dishes_in_orders;
+
+
+
+    public:
+     PiO(string N="");
+     ~PiO();
+   void addItemToTheList(string D, double P);
+   PiO(const PiO &x);
+   PiO& operator=(const PiO& x);
+   friend bool operator < (const PiO &p, const PiO &q);
+   double & operator[](int i);
+   friend ostream& operator<<(ostream &out,const PiO &c);
+
+};
+
+#endif // LIB_H

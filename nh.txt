@@ -1,0 +1,215 @@
+#pragma once
+
+#include <list>
+#include <iostream>
+#include <stdexcept>
+
+using namespace std;
+
+
+class CarData
+{
+
+private:
+    string brand;
+    string reg_number;
+    std::list<string> names;
+    std::list<int> period;
+    static unsigned int count_rentals;
+public:
+
+    CarData(string b="", string reg_n=""): brand{b}, reg_number{reg_n}
+    {
+
+    }
+    ~CarData() {cout << reg_number << " is destroyed " << endl;}
+
+    void setbrand(string b) {brand = b;}
+    string getbrand() {return brand; }
+    void setreg_number(string reg_n) {reg_number = reg_n; }
+    string getreg_num() {return reg_number; }
+
+    void add_rental(string name, int peroid);
+    void remove_rental(string name);
+    friend ostream& operator<< (ostream& stream, CarData &o);
+    float average_time();
+    static unsigned int GetRentalsCount() {return count_rentals; }
+    bool operator< (const CarData &o);
+    int& operator[] (int index);
+    CarData(const CarData &o);
+    CarData& operator= (const CarData &o);
+};
+unsigned int CarData::count_rentals=0;
+
+CarData::CarData(const CarData &o)
+{
+    if(this != &o)
+    {
+        brand = o.brand;
+        reg_number = o.reg_number;
+        names.clear();
+        period.clear();
+
+        for(auto it_name = o.names.begin(); it_name != o.names.end())
+        {
+            names.push_back(*it_name);
+        }
+        for(auto it_perio = o.period.begin(); it_perio != o.perio.end(); ++it_perio)
+        {
+            period.push_back(*it_perio);
+        }
+    }
+}
+
+CarData& operator= (const CarData &o)
+{
+    if(this != &o)
+    {
+        brand = o.brand;
+        reg_number = o.reg_number;
+        names.clear();
+        period.clear();
+
+        for(auto it_name = o.names.begin(); it_name != o.names.end())
+        {
+            names.push_back(*it_name);
+        }
+        for(auto it_perio = o.period.begin(); it_perio != o.perio.end(); ++it_perio)
+        {
+            period.push_back(*it_perio);
+        }
+    }
+    return *this;
+}
+
+int& CarData::operator[] (int index)
+{
+    if(index < 0 || index >= period.size())
+    {
+        throw runtime_error("wrong index");
+    }
+
+    int j=0;
+    for(auto it = period.begin(); it != period.end(); ++it)
+    {
+        if(j == index)
+            return *it;
+        ++j;
+    }
+}
+
+void CarData::add_rental(string name, int p)
+{
+    names.push_back(name);
+    period.push_back(p);
+    ++count_rentals;
+}
+
+void CarData::remove_rental(string target_name)
+{
+    std::list<string> temp_name;
+    std::list<int> temp_period;
+    auto it_period = period.begin(); int i=0; int target_place;
+    for(auto it_name = names.begin(); it_name != names.end(); ++it_name)
+    {
+        if(*it_name == target_name)
+            target_place = i;
+        else
+            temp_name.push_back(*it_name);
+        ++i;
+    }
+
+    auto it_perio2 = period.begin();   int j=0;
+    for(; it_perio2 != period.end(); ++it_perio2)
+    {
+       if(j != target_place)
+            temp_period.push_back(*it_perio2);
+        ++j;
+    }
+
+    names.clear();
+    period.clear();
+
+    for(auto k = temp_name.begin(); k != temp_name.end(); ++k)
+    {
+        names.push_back(*k);
+    }
+
+
+    for(auto l = temp_period.begin(); l != temp_period.end(); ++l)
+    {
+        period.push_back(*l);
+    }
+}
+
+ostream& operator<< (ostream& stream, CarData &o)
+{
+    stream << o.brand << "  " << o.reg_number << endl;
+    std::list<string>::iterator it;
+    auto it_period = o.period.begin();
+    for(it = o.names.begin(); it != o.names.end() && it_period != o.period.end(); ++it, ++it_period)
+    {
+        cout << *it << "  " << *it_period << endl;
+    }
+    return stream;
+}
+
+float CarData::average_time()
+{
+    float sum = 0.0f;
+    for(auto it = period.begin(); it != period.end(); ++it)
+    {
+        sum += *it;
+    }
+
+    return sum / period.size();
+
+}
+
+bool CarData::operator< (const CarData &o)
+{
+    if(this->names.size() < o.names.size())
+        return true;
+    return false;
+}
+--------------------------------------
+
+#include <iostream>
+
+#include "lib.h"
+
+
+using namespace std;
+
+
+int main()
+{
+    cout << CarData::GetRentalsCount() << endl;
+    CarData lambo;
+
+
+
+    lambo.add_rental("Murodilla", 8);
+    lambo.add_rental("javoh", 5);
+    lambo.add_rental("Muhammad", 3);
+    lambo.add_rental("Fozil", 10);
+    cout << lambo << endl;
+
+    cout << CarData::GetRentalsCount() << endl;
+    cout << "\n\nAverage time: " << lambo.average_time() << endl;
+
+    cout << "\n\nAt the index 3: " << lambo[3] << endl;
+
+    CarData c2("EL12233", "Opel Astra");
+    c2.add_rental("Mark Johnson", 10);
+    c2.add_rental("Elizabeth Smith", 3);
+    c2.add_rental("Mark Johnson", 2);
+    c2.add_rental("opa", 5);
+    c2.add_rental("xola xola", 78);
+
+    if(lambo < c2)
+        cout << "\n\nRentals 1 is less than renta; 2" << endl;
+
+
+    return 0;
+}
